@@ -1,47 +1,99 @@
+import { useState } from "react";
+import Sidebar from "../components/Sidebar";
+import ResultCard from "../components/ResultCard";
 export default function RecipeEditor() {
+  const [recipeName, setRecipeName] = useState("");
+  const [ingredients, setIngredients] = useState("");
+  const [temperature, setTemperature] = useState(180);
+  const [time, setTime] = useState(30);
+const [showResult, setShowResult] = useState(false);
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-8">
+    <div className="flex min-h-screen bg-[#FFF8F1]">
+      <Sidebar />
 
-        <h1 className="text-4xl font-bold text-orange-500 mb-8">
-          🍞 BakeLab AI
+      <main className="flex-1 p-10">
+        <h1 className="text-4xl font-bold text-[#6B4226] mb-2">
+          🧁 새 레시피 만들기
         </h1>
 
-        <h2 className="text-2xl font-semibold mb-6">
-          🧁 레시피 작성
-        </h2>
+        <p className="text-gray-500 mb-8">
+          나만의 베이킹 레시피를 만들고 AI로 결과를 예측해보세요.
+        </p>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="bg-white rounded-3xl shadow-lg p-8 max-w-3xl">
 
-          <div>
-            <label className="block mb-2 font-medium">
+          <div className="mb-6">
+            <label className="block font-semibold mb-2">
               레시피 이름
             </label>
 
             <input
-              type="text"
+              className="w-full rounded-xl border p-3"
+              value={recipeName}
+              onChange={(e) => setRecipeName(e.target.value)}
               placeholder="예) 초코칩 쿠키"
-              className="w-full border rounded-lg p-3"
             />
           </div>
 
-          <div>
-            <label className="block mb-2 font-medium">
-              카테고리
+          <div className="mb-6">
+            <label className="block font-semibold mb-2">
+              재료
             </label>
 
-            <select className="w-full border rounded-lg p-3">
-              <option>쿠키</option>
-              <option>케이크</option>
-              <option>머핀</option>
-              <option>빵</option>
-              <option>마카롱</option>
-            </select>
+            <textarea
+              className="w-full rounded-xl border p-3"
+              rows={6}
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              placeholder="밀가루 300g&#10;버터 100g&#10;설탕 80g"
+            />
           </div>
 
-        </div>
+          <div className="mb-6">
+            <label className="block font-semibold">
+              🌡 오븐 온도 ({temperature}℃)
+            </label>
 
-      </div>
+            <input
+              className="w-full"
+              type="range"
+              min="100"
+              max="250"
+              value={temperature}
+              onChange={(e) => setTemperature(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-8">
+            <label className="block font-semibold">
+              ⏰ 굽는 시간 ({time}분)
+            </label>
+
+            <input
+              className="w-full"
+              type="range"
+              min="5"
+              max="120"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+
+          <button
+  onClick={() => setShowResult(true)}
+  className="w-full rounded-2xl bg-[#8B5E3C] text-white py-4 text-lg font-bold hover:bg-[#6F472C] transition"
+>
+  🤖 AI 분석하기
+</button>
+{showResult && (
+  <ResultCard
+    recipeName={recipeName}
+    temperature={temperature}
+    time={time}
+  />
+)}
+        </div>
+      </main>
     </div>
   );
 }
