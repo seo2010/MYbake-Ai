@@ -7,6 +7,8 @@ export default function RecipeEditor() {
   const [temperature, setTemperature] = useState(180);
   const [time, setTime] = useState(30);
 const [showResult, setShowResult] = useState(false);
+const [loading, setLoading] = useState(false);
+const [loadingProgress, setLoadingProgress] = useState(0);
   return (
     <div className="flex min-h-screen bg-[#FFF8F1]">
       <Sidebar />
@@ -80,17 +82,59 @@ const [showResult, setShowResult] = useState(false);
           </div>
 
           <button
-  onClick={() => setShowResult(true)}
-  className="w-full rounded-2xl bg-[#8B5E3C] text-white py-4 text-lg font-bold hover:bg-[#6F472C] transition"
+onClick={() => {
+  setLoading(true);
+  setShowResult(false);
+  setLoadingProgress(0);
+
+  let progress = 0;
+
+  const interval = setInterval(() => {
+    progress += 10;
+    setLoadingProgress(progress);
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      setLoading(false);
+      setShowResult(true);
+    }
+  }, 200);
+}}
+ className="w-full rounded-2xl bg-[#8B5E3C] text-white py-4 text-lg font-bold transition-all duration-300 hover:bg-[#6F472C] hover:scale-[1.02] hover:shadow-xl"
 >
   🤖 AI 분석하기
 </button>
+{loading && (
+  <div className="mt-8 rounded-3xl bg-white shadow-lg p-8 text-center">
+    <div className="text-5xl mb-4">🤖</div>
+
+    <h2 className="text-2xl font-bold text-[#8B5E3C]">
+      AI 분석 중...
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      레시피를 분석하고 있습니다.
+    </p>
+
+   <div className="w-full h-3 bg-gray-200 rounded-full mt-6 overflow-hidden">
+  <div
+    className="h-full bg-[#8B5E3C] transition-all duration-200"
+    style={{ width: `${loadingProgress}%` }}
+  ></div>
+</div>
+
+<p className="mt-3 text-sm text-gray-600">
+  {loadingProgress}%
+</p>
+  </div>
+)}
 {showResult && (
-  <ResultCard
-    recipeName={recipeName}
-    temperature={temperature}
-    time={time}
-  />
+<ResultCard
+  recipeName={recipeName}
+  ingredients={ingredients}
+  temperature={temperature}
+  time={time}
+/>
 )}
         </div>
       </main>
